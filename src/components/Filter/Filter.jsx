@@ -1,12 +1,16 @@
 import React from 'react';
-import PropTypes from 'prop-types';
 import { Container, Input, Lebel } from './Filter.styled';
+import { useSelector, useDispatch } from 'react-redux';
+import { setFilter } from '../../redux/filterSlice';
+import { getFilterValue } from '../../redux/selectors';
 
-export const Filter = ({ value, onFilterChange }) => {
-  const handleChange = (e) => {
-    const { value } = e.currentTarget;
-    onFilterChange(value);
-  };
+export const Filter = () => {
+  const dispatch = useDispatch();
+  const filter = useSelector(getFilterValue);
+  const handleChange = e => {
+  const { value } = e.currentTarget;
+  dispatch(setFilter(value));
+  }
 
   return (
     <Container>
@@ -15,15 +19,10 @@ export const Filter = ({ value, onFilterChange }) => {
         <Input
           type="text"
           name="filter"
-          value={value}
+          value={filter}
           onChange={handleChange}
         />
       </Lebel>
     </Container>
   );
-};
-
-Filter.propTypes = {
-  value: PropTypes.string.isRequired,
-  onFilterChange: PropTypes.func.isRequired,
 };
