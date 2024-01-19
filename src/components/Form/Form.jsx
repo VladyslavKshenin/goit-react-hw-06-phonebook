@@ -1,17 +1,36 @@
 import React, { useState } from 'react';
 import { Form, Button } from './Form.styled';
-import { useDispatch } from 'react-redux';
+import {useSelector, useDispatch } from 'react-redux';
 import { addNewContact } from '../../redux/contactsSlice';
+import { getContacts } from '../../redux/selectors';
+import { toast } from 'react-toastify';
 
 export const ContactForm = () => {
+  const contacts = useSelector(getContacts);
   const dispatch = useDispatch();
   const [state, setState] = useState({ name: '', number: '' });
   const { name, number } = state;
 
   const handleSubmit = (e) => {
     e.preventDefault();
-    dispatch(addNewContact(state));
-    formReset();
+      if (
+      contacts.some(
+        contact => contact.name.toLowerCase() === name.toLowerCase().trim()
+      )
+    ) {
+      toast.warn(`${name} is already in your contacts`, {
+        position: 'top-right',
+        theme: 'colored',
+      });
+    } else if (contacts.some(contact => contact.number === number.trim())) {
+      toast.warn(`${number} is already in your contacts`, {
+        position: 'top-right',
+        theme: 'colored',
+      });
+    } else {
+        dispatch(addNewContact(state));
+        formReset();
+    }
   };
 
   const formReset = () => {
